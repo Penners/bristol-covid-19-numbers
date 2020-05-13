@@ -12,9 +12,8 @@
     "date-fns-tz": "^1.0.10",
     "lodash.get": "^4.4.2",
     "next": "^9.3.3",
-    "plotly.js": "^1.54.1",
+    "next-absolute-url": "^1.2.2",
     "react": "^16.13.0",
-    "react-dom": "^16.13.0",
-    "react-plotly.js": "^2.4.0"
+    "react-dom": "^16.13.0"
   }
 }

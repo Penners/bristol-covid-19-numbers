@@ -1,38 +1,9 @@
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import { format } from "date-fns-tz";
+import absoluteUrl from "next-absolute-url";
 
 const Home = (props) => {
-  console.log(props);
-
-  const [totalCases, setTotalCases] = useState(0);
-  const [newCases, setNewCases] = useState(0);
-  const [changeSinceYesterday, setChangeSinceYesterday] = useState(0);
-  const [daysSinceLastCase, setDaysSinceLastCase] = useState(0);
-  const [totalDataSet, setTotalDataSet] = useState([]);
-  const [metaData, setMetaData] = useState([]);
-
-  useEffect(() => {
-    async function fetchData() {
-      const res = await fetch("api/dataset");
-      const json = await res.json();
-
-      const change =
-        (json.newCasesToday - json.newCasesYesterday <= 0 ? "" : "+") +
-        (json.newCasesToday - json.newCasesYesterday);
-      setChangeSinceYesterday(change);
-      setTotalCases(json.totalCases);
-      setNewCases(json.newCasesToday);
-      setTotalDataSet(json.totalDataSet);
-      setDaysSinceLastCase(json.daysSinceLastCase);
-      setMetaData(json.metaData);
-
-      console.log(totalDataSet);
-    }
-
-    fetchData();
-  }, []);
-
   return (
     <div>
       <Head>
@@ -48,30 +19,38 @@ const Home = (props) => {
           <tbody>
             <tr>
               <td>
-                <h3>Todays Confirmed Cases: {newCases}</h3>
+                <h3>Todays Confirmed Cases: {props.newCasesToday}</h3>
               </td>
               <td>
-                <h3>Total Confirmed Cases: {totalCases}</h3>
+                <h3>Total Confirmed Cases: {props.totalCases}</h3>
               </td>
             </tr>
             <tr>
               <td>
-                <h3>Change Since Yesterday: {changeSinceYesterday}</h3>
+                <h3>
+                  Change Since Yesterday:{" "}
+                  {(props.newCasesToday - props.newCasesYesterday <= 0
+                    ? ""
+                    : "+") +
+                    (props.newCasesToday - props.newCasesYesterday)}
+                </h3>
               </td>
               <td>
-                <h3>Days since last confirmed case: {daysSinceLastCase}</h3>
+                <h3>
+                  Days since last confirmed case: {props.daysSinceLastCase}
+                </h3>
               </td>
             </tr>
           </tbody>
         </table>
-        <h7>
+        <h5>
           Updated:{" "}
-          {metaData.lastUpdatedAt
-            ? format(new Date(metaData.lastUpdatedAt), "HH:mm dd/MM/yyyy")
+          {props.metaData.lastUpdatedAt
+            ? format(new Date(props.metaData.lastUpdatedAt), "HH:mm dd/MM/yyyy")
             : ""}
-        </h7>
+        </h5>
         <blockquote cite="https://coronavirus.data.gov.uk/">
-          <p>{metaData.disclaimer}</p>
+          <p>{props.metaData.disclaimer}</p>
           <footer>
             <cite>
               Data Source:{" "}
@@ -91,9 +70,9 @@ const Home = (props) => {
             <th>Date</th>
           </tr>
         </thead>
-        {totalDataSet.length > 0 && (
+        {props.totalDataSet.length > 0 && (
           <tbody>
-            {totalDataSet.map((element, key) => {
+            {props.totalDataSet.map((element, key) => {
               return (
                 <tr key={key}>
                   <td>{element.dailyCases}</td>
@@ -109,9 +88,16 @@ const Home = (props) => {
   );
 };
 
-export async function getServerSideProps(context) {
-  //   console.log(context);
-  return { props: {} };
-}
+Home.getInitialProps = async ({ req }) => {
+  const { origin } = absoluteUrl(req);
+  const apiURL = `${origin}/api/dataset`;
+
+  console.log(apiURL);
+
+  const res = await fetch(apiURL);
+  const json = await res.json();
+
+  return json;
+};
 
 export default Home;
