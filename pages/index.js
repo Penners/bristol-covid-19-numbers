@@ -8,24 +8,24 @@ const Home = (props) => {
       <article>
         <h1>Bristol Covid-19 Tracker</h1>
         <p>
-          Daily updates on the number of comfirmed covid-19 cases in the Bristol
-          local authority
+          Daily updates on the number of cofirmed covid-19 cases in the Bristol
+          local authority.
         </p>
 
         <table>
           <tbody>
             <tr>
               <td>
-                <h3>Todays Confirmed Cases: {props.newCasesToday}</h3>
+                <h3>Todays confirmed cases: {props.newCasesToday}</h3>
               </td>
               <td>
-                <h3>Total Confirmed Cases: {props.totalCases}</h3>
+                <h3>Total confirmed cases: {props.totalCases}</h3>
               </td>
             </tr>
             <tr>
               <td>
                 <h3>
-                  Change Since Yesterday:{" "}
+                  Change since yesterday:{" "}
                   {(props.newCasesToday - props.newCasesYesterday <= 0
                     ? ""
                     : "+") +
