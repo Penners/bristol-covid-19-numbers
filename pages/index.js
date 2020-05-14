@@ -34,7 +34,10 @@ const Home = (props) => {
               </td>
               <td>
                 <h3>
-                  Days since last confirmed case: {props.daysSinceLastCase}
+                  Days since last confirmed case:{" "}
+                  {props.daysSinceLastCase !== null
+                    ? props.daysSinceLastCase
+                    : 0}
                 </h3>
               </td>
             </tr>
