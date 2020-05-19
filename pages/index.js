@@ -65,6 +65,7 @@ const Home = (props) => {
         <h2>Total Cases</h2>
         <Graph dataSet={props.totalDataSet} totalCases={true} />
         <h2>Table of Data</h2>
+        <h5>* denotes that no data was reported on this day</h5>
         <table>
           <thead>
             <tr>
@@ -78,7 +79,10 @@ const Home = (props) => {
               {props.totalDataSet.map((element, key) => {
                 return (
                   <tr key={key}>
-                    <td>{element.dailyCases}</td>
+                    <td>
+                      {element.dailyCases}
+                      {element.assumedData ? "*" : ""}
+                    </td>
                     <td>{element.totalCases}</td>
                     <td>{element.dateFormat}</td>
                   </tr>
