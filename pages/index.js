@@ -61,9 +61,13 @@ const Home = (props) => {
         </blockquote>
 
         <h2>Daily Cases</h2>
-        <Graph dataSet={props.totalDataSet} />
+        <Graph dataSet={props.totalDataSet} hoverLabel="Daily New Cases" />
         <h2>Total Cases</h2>
-        <Graph dataSet={props.totalDataSet} totalCases={true} />
+        <Graph
+          dataSet={props.totalDataSet}
+          totalCases={true}
+          hoverLabel="Total Cases"
+        />
         <h2>Table of Data</h2>
         <h5>* denotes that no data was reported on this day</h5>
         <table>

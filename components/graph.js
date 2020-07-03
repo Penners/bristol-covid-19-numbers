@@ -4,7 +4,7 @@ import prepGraphData from "../lib/prepGraphData";
 const graph = (props) => {
   const data = prepGraphData(
     props.dataSet,
-    ["", "Daily Cases"],
+    ["", props.hoverLabel],
     props.totalCases
   );
   const options = {
