@@ -1,11 +1,13 @@
 import { format } from "date-fns-tz";
 import absoluteUrl from "next-absolute-url";
 import Graph from "../components/graph";
+import Warning from "../components/warning";
 
 const Home = (props) => {
   return (
     <div>
       <article>
+        <Warning />
         <h1>Bristol Covid-19 Tracker</h1>
         <p>
           Daily updates on the number of cofirmed covid-19 cases in the Bristol
