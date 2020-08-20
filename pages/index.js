@@ -24,7 +24,7 @@ const Home = (props) => {
                 <h3>Total confirmed cases: {props.totalCases}</h3>
               </td>
             </tr>
-            <tr>
+            {/* <tr>
               <td>
                 <h3>
                   Change since yesterday:{" "}
@@ -42,7 +42,7 @@ const Home = (props) => {
                     : 0}
                 </h3>
               </td>
-            </tr>
+            </tr> */}
           </tbody>
         </table>
         <h5>
@@ -104,7 +104,7 @@ const Home = (props) => {
 
 Home.getInitialProps = async ({ req }) => {
   const { origin } = absoluteUrl(req);
-  const apiURL = `${origin}/api/dataset`;
+  const apiURL = `${origin}/api/dataset2`;
 
   const res = await fetch(apiURL);
   const json = await res.json();

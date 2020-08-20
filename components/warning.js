@@ -2,13 +2,13 @@ const warning = () => {
     return(
         <>
         <div className="Warning">
-            Warning, the figures on this site are currently inaccurate. The current data source for this website has been deprecated. As a result no new cases will be added. A fix for this is in the works.
+            The site is working again, previous data has been updated to reflect new data source
         </div>
         <style jsx>{`
             .Warning {
                 padding: 5px;
-                background-color: yellow;
-                color: black;
+                background-color: teal;
+                color: white;
                 margin-bottom: 20px;
             }
         `}</style>
