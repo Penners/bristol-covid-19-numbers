@@ -1,4 +1,4 @@
-import parseData from "../../lib/parseData";
+import parseData from "../../lib/parseData2";
 
 export default (req, res) => {
   return new Promise((resolve) => {
@@ -13,7 +13,7 @@ export default (req, res) => {
     )
       .then((response) => response.json())
       .then((result) => {
-        res.setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate");
+        res.setHeader("Cache-Control", "max-age=0, s-maxage=3600");
         res.status(200).json(parseData(result));
         return resolve();
       })
