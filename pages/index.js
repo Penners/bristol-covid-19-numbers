@@ -1,115 +1,121 @@
-import { format } from "date-fns-tz";
-import absoluteUrl from "next-absolute-url";
-import Graph from "../components/graph";
-import Warning from "../components/warning";
+import Graph from "components/graph"
+import getCovidData from "lib/getCovidData"
+import getDateTime from "lib/getDateTime"
+import prepGraphData from "lib/prepGraphData"
+import previousDays from "lib/previousDays"
+import { useEffect, useState } from "react"
 
-const Home = (props) => {
-  return (
-    <div>
-      <article>
-        <Warning />
-        <h1>Bristol Covid-19 Tracker</h1>
-        <p>
-          Daily updates on the number of cofirmed covid-19 cases in the Bristol
-          local authority.
-        </p>
+const Home = ({ dataSet, lastUpdatedAt }) => {
 
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                <h3>Todays confirmed cases: {props.newCasesToday}</h3>
-              </td>
-              <td>
-                <h3>Total confirmed cases: {props.totalCases}</h3>
-              </td>
-            </tr>
-            {/* <tr>
-              <td>
-                <h3>
-                  Change since yesterday:{" "}
-                  {(props.newCasesToday - props.newCasesYesterday <= 0
-                    ? ""
-                    : "+") +
-                    (props.newCasesToday - props.newCasesYesterday)}
-                </h3>
-              </td>
-              <td>
-                <h3>
-                  Days since last confirmed case:{" "}
-                  {props.daysSinceLastCase !== null
-                    ? props.daysSinceLastCase
-                    : 0}
-                </h3>
-              </td>
-            </tr> */}
-          </tbody>
-        </table>
-        <h5>
-          Updated:{" "}
-          {props.metaData.lastUpdatedAt
-            ? format(new Date(props.metaData.lastUpdatedAt), "HH:mm dd/MM/yyyy")
-            : ""}
-        </h5>
-        <blockquote cite="https://coronavirus.data.gov.uk/">
-          <footer>
-            <cite>
-              Data Source:{" "}
-              <a href="https://coronavirus.data.gov.uk/">
-                https://coronavirus.data.gov.uk/
-              </a>
-            </cite>
-          </footer>
-        </blockquote>
+    const [isClientSide, setIsClientSide] = useState(false)
+    useEffect(() => setIsClientSide(true))
 
-        <h2>Daily Cases</h2>
-        <Graph dataSet={props.totalDataSet} hoverLabel="Daily New Cases" />
-        <h2>Total Cases</h2>
-        <Graph
-          dataSet={props.totalDataSet}
-          totalCases={true}
-          hoverLabel="Total Cases"
-        />
-        <h2>Table of Data</h2>
-        <h5>* denotes that no data was reported on this day</h5>
-        <table>
-          <thead>
-            <tr>
-              <th>New Cases</th>
-              <th>Total Cases</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          {props.totalDataSet.length > 0 && (
-            <tbody>
-              {props.totalDataSet.map((element, key) => {
-                return (
-                  <tr key={key}>
-                    <td>
-                      {element.dailyCases}
-                      {element.assumedData ? "*" : ""}
-                    </td>
-                    <td>{element.totalCases}</td>
-                    <td>{element.dateFormat}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          )}
-        </table>
-      </article>
-    </div>
-  );
-};
+    const cumDataSet = prepGraphData({
+        dataSet, 
+        config: ["", "Total Cases"],
+        key: "cumCasesBySpecimenDate"
+    })
 
-Home.getInitialProps = async ({ req }) => {
-  const { origin } = absoluteUrl(req);
-  const apiURL = `${origin}/api/dataset2`;
+    const newDataSet = prepGraphData({
+        dataSet, 
+        config: ["", "New Cases"],
+        key: "newCasesBySpecimenDate"
+    })
 
-  const res = await fetch(apiURL);
-  const json = await res.json();
+    return (
+        <div>
+            <article>
+                <h1>Bristol Covid-19 Tracker</h1>
+                <p>
+                    Daily updates on the number of cofirmed covid-19 cases in the Bristol
+                    local authority.
+                </p>
 
-  return json;
-};
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <h3>Past 24 hours: {dataSet[0].newCasesBySpecimenDate}</h3>
+                            </td>
+                            <td>
+                                <h3>Past 7 days: {previousDays(dataSet, 7)}</h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h3>Past 28 days: {previousDays(dataSet, 28)}</h3>
+                            </td>
+                            <td>
+                                <h3>Total cases: {dataSet[0].cumCasesBySpecimenDate}</h3>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>
+                    Last Updated: {isClientSide ? getDateTime(lastUpdatedAt) : lastUpdatedAt.toString()}
+                </h5>
+                <blockquote cite="https://coronavirus.data.gov.uk/">
+                    <footer>
+                        <cite>
+                            Data Source:
+                            <a href="https://coronavirus.data.gov.uk/">
+                                https://coronavirus.data.gov.uk/
+                            </a>
+                        </cite>
+                    </footer>
+                </blockquote>
+
+                <h2>Daily Cases</h2>
+                <Graph dataSet={newDataSet} />
+                <h2>Total Cases</h2>
+                <Graph dataSet={cumDataSet} />
+                <h2>New &amp; Total Cases</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>New Cases</th>
+                            <th>Total Cases</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    {dataSet.length > 0 && (
+                        <tbody>
+                            {dataSet.map(({ date, newCasesBySpecimenDate, cumCasesBySpecimenDate }, key) => {
+                                return (
+                                    <tr key={`tablerow-${key}`}>
+                                        <td>
+                                            {newCasesBySpecimenDate}
+                                        </td>
+                                        <td>
+                                            {cumCasesBySpecimenDate}
+                                        </td>
+                                        <td>
+                                            {isClientSide ? new Date(date).toLocaleDateString("en-GB") : date}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    )}
+                </table>
+            </article>
+        </div>
+    );
+}
+
+export async function getStaticProps() {
+
+    const dataSet = await getCovidData();
+
+    
+
+    return {
+        props: {
+            dataSet,
+            lastUpdatedAt: new Date().toISOString()
+        },
+        revalidate: 1 * 60 * 60
+    }
+}
 
 export default Home;

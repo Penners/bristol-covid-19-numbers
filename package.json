@@ -8,11 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "date-fns": "^2.13.0",
-    "date-fns-tz": "^1.0.10",
-    "lodash.get": "^4.4.2",
-    "next": "^9.3.3",
-    "next-absolute-url": "^1.2.2",
+    "next": "^10.0.6",
     "next-seo": "^4.4.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
