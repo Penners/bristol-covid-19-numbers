@@ -1,4 +1,5 @@
 import Graph from "components/graph"
+import UpdateMessage from "components/UpdateMessage"
 import getCovidData from "lib/getCovidData"
 import getDateTime from "lib/getDateTime"
 import prepGraphData from "lib/prepGraphData"
@@ -21,9 +22,10 @@ const Home = ({ dataSet, lastUpdatedAt }) => {
         config: ["", "New Cases"],
         key: "newCasesBySpecimenDate"
     })
-
+    
     return (
         <div>
+            <UpdateMessage date={lastUpdatedAt} />
             <article>
                 <h1>Bristol Covid-19 Tracker</h1>
                 <p>
