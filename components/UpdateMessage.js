@@ -7,7 +7,7 @@ function UpdateMessage({date}) {
 
     const [visible, setVisible] = useState(false)
     useEffect(() => {
-        if (+now - +then > 60 * 1000){
+        if (+now - +then > 60 * 60 * 12 * 1000){
             setVisible(true)
         } 
     }, []) 
